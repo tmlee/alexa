@@ -9,7 +9,9 @@ describe Alexa::API::SitesLinkingIn do
 
   describe "parsing xml" do
     before do
-      stub_request(:get, %r{http://awis.amazonaws.com}).to_return(fixture("sites_linking_in/github_count_3.txt"))
+      stub_request(:get, %r{https://awis.amazonaws.com/api.*})
+                .with(headers: {'Accept'=>'application/xml', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>%r{.*}, Authorization: %r{.*}, 'Content-Type': %r{.*}, 'X-Amz-Date': %r{.*}})
+                .to_return(fixture("sites_linking_in/github_count_3.txt"))
       @sites_linking_in = Alexa::API::SitesLinkingIn.new(:access_key_id => "fake", :secret_access_key => "fake")
       @sites_linking_in.fetch(:url => "github.com", :count => 3)
     end

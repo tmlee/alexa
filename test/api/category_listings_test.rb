@@ -9,7 +9,9 @@ describe Alexa::API::CategoryListings do
 
   describe "parsing xml" do
     before do
-      stub_request(:get, %r{http://awis.amazonaws.com}).to_return(fixture("category_listings/card_games.txt"))
+      stub_request(:get, %r{https://awis.amazonaws.com/api.*})
+                .with(headers: {'Accept'=>'application/xml', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>%r{.*}, Authorization: %r{.*}, 'Content-Type': %r{.*}, 'X-Amz-Date': %r{.*}})
+                .to_return(fixture("category_listings/card_games.txt"))
       @category_listings = Alexa::API::CategoryListings.new(:access_key_id => "fake", :secret_access_key => "fake")
       @category_listings.fetch(:path => "Top/Games/Card_Games")
     end

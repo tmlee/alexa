@@ -8,7 +8,9 @@ describe Alexa::API::TrafficHistory do
   end
 
   it "defaults start to be in range to current time" do
-    stub_request(:get, %r{http://awis.amazonaws.com}).to_return(:body => "ok")
+    stub_request(:get, %r{https://awis.amazonaws.com/api.*})
+                .with(headers: {'Accept'=>'application/xml', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>%r{.*}, Authorization: %r{.*}, 'Content-Type': %r{.*}, 'X-Amz-Date': %r{.*}})
+                .to_return(:body => "ok")
     @traffic_history = Alexa::API::TrafficHistory.new(:access_key_id => "fake", :secret_access_key => "fake")
     @traffic_history.fetch(:url => "github.com", :range => 14)
 
@@ -18,7 +20,9 @@ describe Alexa::API::TrafficHistory do
 
   describe "parsing xml" do
     before do
-      stub_request(:get, %r{http://awis.amazonaws.com}).to_return(fixture("traffic_history/github.txt"))
+      stub_request(:get, %r{https://awis.amazonaws.com/api.*})
+                .with(headers: {'Accept'=>'application/xml', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>%r{.*}, Authorization: %r{.*}, 'Content-Type': %r{.*}, 'X-Amz-Date': %r{.*}})
+                .to_return(fixture("traffic_history/github.txt"))
       @traffic_history = Alexa::API::TrafficHistory.new(:access_key_id => "fake", :secret_access_key => "fake")
       @traffic_history.fetch(:url => "github.com")
     end
@@ -49,7 +53,9 @@ describe Alexa::API::TrafficHistory do
   end
 
   it "has error status code" do
-    stub_request(:get, %r{http://awis.amazonaws.com}).to_return(fixture("traffic_history/alexa_error.txt"))
+    stub_request(:get, %r{https://awis.amazonaws.com/api.*})
+                .with(headers: {'Accept'=>'application/xml', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>%r{.*}, Authorization: %r{.*}, 'Content-Type': %r{.*}, 'X-Amz-Date': %r{.*}})
+                .to_return(fixture("traffic_history/alexa_error.txt"))
     traffic_history = Alexa::API::TrafficHistory.new(:access_key_id => "fake", :secret_access_key => "fake")
     traffic_history.fetch(:url => "amazon.com")
 

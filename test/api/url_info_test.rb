@@ -8,7 +8,9 @@ describe Alexa::API::UrlInfo do
   end
 
   it "allows to pass single attribute as response_group" do
-    stub_request(:get, %r{http://awis.amazonaws.com}).to_return(:body => "ok")
+    stub_request(:get, %r{https://awis.amazonaws.com/api.*})
+                .with(headers: {'Accept'=>'application/xml', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>%r{.*}, Authorization: %r{.*}, 'Content-Type': %r{.*}, 'X-Amz-Date': %r{.*}})
+                .to_return(:body => "ok")
     @url_info = Alexa::API::UrlInfo.new(:access_key_id => "fake", :secret_access_key => "fake")
     @url_info.fetch(:url => "github.com", :response_group => "rank")
 
@@ -17,7 +19,9 @@ describe Alexa::API::UrlInfo do
 
   describe "parsing xml returned by options rank, links_in_count, site_data" do
     before do
-      stub_request(:get, %r{http://awis.amazonaws.com}).to_return(fixture("url_info/custom-response-group.txt"))
+      stub_request(:get, %r{https://awis.amazonaws.com/api.*})
+                .with(headers: {'Accept'=>'application/xml', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>%r{.*}, Authorization: %r{.*}, 'Content-Type': %r{.*}, 'X-Amz-Date': %r{.*}})
+                .to_return(fixture("url_info/custom-response-group.txt"))
       @url_info = Alexa::API::UrlInfo.new(:access_key_id => "fake", :secret_access_key => "fake")
       @url_info.fetch(:url => "github.com", :response_group => ["rank", "links_in_count", "site_data"])
     end
@@ -47,7 +51,9 @@ describe Alexa::API::UrlInfo do
 
   describe "with github.com full response group" do
     before do
-      stub_request(:get, %r{http://awis.amazonaws.com}).to_return(fixture("url_info/github_full.txt"))
+      stub_request(:get, %r{https://awis.amazonaws.com/api.*})
+                .with(headers: {'Accept'=>'application/xml', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>%r{.*}, Authorization: %r{.*}, 'Content-Type': %r{.*}, 'X-Amz-Date': %r{.*}})
+                .to_return(fixture("url_info/github_full.txt"))
       @url_info = Alexa::API::UrlInfo.new(:access_key_id => "fake", :secret_access_key => "fake")
       @url_info.fetch(:url => "github.com")
     end
@@ -108,7 +114,7 @@ describe Alexa::API::UrlInfo do
     it "returns usage statistics" do
       assert_equal 4, @url_info.usage_statistics.size
     end
-    
+
     it "returns categories" do
       assert_equal 2, @url_info.categories.size
     end
@@ -120,7 +126,9 @@ describe Alexa::API::UrlInfo do
 
   describe "with github.com rank response group" do
     it "successfuly connects" do
-      stub_request(:get, %r{http://awis.amazonaws.com}).to_return(fixture("url_info/github_rank.txt"))
+      stub_request(:get, %r{https://awis.amazonaws.com/api.*})
+                .with(headers: {'Accept'=>'application/xml', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>%r{.*}, Authorization: %r{.*}, 'Content-Type': %r{.*}, 'X-Amz-Date': %r{.*}})
+                .to_return(fixture("url_info/github_rank.txt"))
       @url_info = Alexa::API::UrlInfo.new(:access_key_id => "fake", :secret_access_key => "fake")
       @url_info.fetch(:url => "github.com", :response_group => ["rank"])
 

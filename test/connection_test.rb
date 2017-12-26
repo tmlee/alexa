@@ -5,7 +5,7 @@ describe Alexa::Connection do
     connection = Alexa::Connection.new(:access_key_id => "fake", :secret_access_key => "fake")
     connection.stubs(:timestamp).returns("2012-08-08T20:58:32.000Z")
 
-    assert_equal "3uaSV1s7uJUtIDivvM8mzPkNxq+Za8jAFCDnQOvjRH4=", connection.signature
+    assert_match /f619b6d949521588c3868e641030ea817f539c128f5139f364436fef163745ec/, connection.signature
   end
 
   it "normalizes non string params value" do
@@ -27,7 +27,9 @@ describe Alexa::Connection do
   end
 
   it "raises error when unathorized" do
-    stub_request(:get, %r{http://awis.amazonaws.com}).to_return(fixture("unathorized.txt"))
+    stub_request(:get, %r{https://awis.amazonaws.com/api.*})
+                .with(headers: {'Accept'=>'application/xml', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>%r{.*}, Authorization: %r{.*}, 'Content-Type': %r{.*}, 'X-Amz-Date': %r{.*}})
+                .to_return(fixture("unathorized.txt"))
     connection = Alexa::Connection.new(:access_key_id => "wrong", :secret_access_key => "wrong")
 
     assert_raises Alexa::ResponseError do
@@ -36,7 +38,9 @@ describe Alexa::Connection do
   end
 
   it "raises error when forbidden" do
-    stub_request(:get, %r{http://awis.amazonaws.com}).to_return(fixture("forbidden.txt"))
+    stub_request(:get, %r{https://awis.amazonaws.com/api.*})
+                .with(headers: {'Accept'=>'application/xml', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>%r{.*}, Authorization: %r{.*}, 'Content-Type': %r{.*}, 'X-Amz-Date': %r{.*}})
+                .to_return(fixture("forbidden.txt"))
     connection = Alexa::Connection.new(:access_key_id => "wrong", :secret_access_key => "wrong")
 
     assert_raises Alexa::ResponseError do
